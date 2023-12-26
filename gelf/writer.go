@@ -99,7 +99,7 @@ func numChunks(b []byte) int {
 // New returns a new GELF Writer.  This writer can be used to send the
 // output of the standard Go log functions to a central GELF server by
 // passing it to log.SetOutput()
-func NewWriter(addr string) (*Writer, error) {
+func NewWriter(addr) (*Writer, error) {
 	var err error
 	w := new(Writer)
 	w.CompressionLevel = flate.BestSpeed
@@ -116,6 +116,23 @@ func NewWriter(addr string) (*Writer, error) {
 	return w, nil
 }
 
+// New returns a new GELF Writer.  This writer can be used to send the
+// output of the standard Go log functions to a central GELF server by
+// passing it to log.SetOutput()
+func NewWriterWithHost(addr,host string) (*Writer, error) {
+	var err error
+	w := new(Writer)
+	w.CompressionLevel = flate.BestSpeed
+
+	if w.conn, err = net.Dial("udp", addr); err != nil {
+		return nil, err
+	}
+	w.hostname = host
+
+	w.Facility = path.Base(os.Args[0])
+
+	return w, nil
+}
 // writes the gzip compressed byte array to the connection as a series
 // of GELF chunked messages.  The format is documented at
 // http://docs.graylog.org/en/2.1/pages/gelf.html as:
