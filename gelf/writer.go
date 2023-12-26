@@ -116,9 +116,6 @@ func NewWriter(addr string) (*Writer, error) {
 	return w, nil
 }
 
-// New returns a new GELF Writer.  This writer can be used to send the
-// output of the standard Go log functions to a central GELF server by
-// passing it to log.SetOutput()
 func NewWriterWithHost(addr,host string) (*Writer, error) {
 	var err error
 	w := new(Writer)
